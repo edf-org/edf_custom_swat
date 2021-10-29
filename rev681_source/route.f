@@ -223,7 +223,14 @@
       
 !! perform in-stream pesticide calculations
       if (ievent == 0) then
-        call rtpest
+!! LEP EDF 2021 choose among pesticide process options
+        If (rtpestcust == 1) then 
+          call rtpest3 !!Stone routine
+        else if (rtpestcust == 2) then
+          call rtpestedf !!EDF routine
+        else
+          call rtpest
+        end if
       else
         call rthpest
       end if

@@ -275,6 +275,7 @@
 
       integer :: jrch, ii
       real*8 :: sedcon, bedvol, sedpest, wtmp
+      real*8 :: bursedpstmass
 
       jrch = 0
       jrch = inum1
@@ -390,7 +391,9 @@
       sedpest = 0.
       bedvol = ch_w(2,jrch) * ch_l2(jrch) * 1000. * sedpst_act(jrch)
       sedpest = sedpst_conc(jrch) * bedvol
-
+      !!LEP EDF 2021 also output total chemical in buried sediment
+      bursedpstmass = sedpst_concb(jrch)*(depch(jrch) * 1000. - (bedvol* 0.5 * 1350))
+      
 !! set daily reach output
       rchdy(1,jrch) = varoute(2,inum2) * (1. - rnum1) / 86400. !!flow in (m^3/s)
       rchdy(2,jrch) = rtwtr / 86400. !!flow out (m^3/s)
@@ -436,6 +439,7 @@
       rchdy(41,jrch) = varoute(21,ihout)                 !!cmetal #2
       rchdy(42,jrch) = varoute(22,ihout)                 !!cmetal #3
       rchdy(60,jrch) = varoute(1,ihout)                  !!water temp deg c
+      rchdy(61,jrch) = bursedpstmass                     !!LEP EDF 2021 chem in buried rivbed sed mg
 !!    sediment routing 
 !!    Assumed all silt for default sediment routine
 !!    For other sediment routing models particle size are tracked

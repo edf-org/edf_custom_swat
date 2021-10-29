@@ -249,6 +249,7 @@
       sedpst_act = 0.
       sedpst_bry = 0.
       sedpst_conc = 0.
+      sedpst_concb = 0. !! LEP EDF 2021
       sedpst_rea = 0.
       sedst = 0.
       shallst = 0.

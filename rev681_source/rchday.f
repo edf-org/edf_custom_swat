@@ -183,7 +183,11 @@
           pdvar(45) = 0. 
         endif
         pdvar(46) = rchdy(60,j)   ! water temperature deg c
-        
+!! LEP EDF 2021 added for chemical in buried sediment
+!! In practice users will only be able to print this when custom output specified in file.cio
+        if (rtpestcust == 2) then
+          pdvar(47) = rchdy(61,j)
+        end if
 
 !!  compute month and day given julian day
         call xmon 

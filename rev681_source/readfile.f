@@ -737,6 +737,10 @@
       read (101,*, iostat=eof) icalen
       if (icalen == 1) iprint = 1
       
+!     LEP EDF 2021
+      read (101,*, iostat=eof) rtpestcust !let 0 or none = original 1 = Stone/VVWM 2 = EDF routine
+      if (eof < 0) rtpestcust=0
+      
       if (isproj == 1) then
         open (19,file="output2.std")
         open (20,file="output2.rch",recl=600)

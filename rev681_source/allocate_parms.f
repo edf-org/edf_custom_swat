@@ -291,6 +291,7 @@
       allocate (sedpst_act(mch))
       allocate (sedpst_bry(mch))
       allocate (sedpst_conc(mch))
+      allocate (sedpst_concb(mch)) !! LEP EDF 2021
       allocate (sedpst_rea(mch))
       allocate (sedst(mch))
       allocate (vel_chan(mch))

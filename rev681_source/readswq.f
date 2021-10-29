@@ -64,7 +64,9 @@
 !!    sedpst_bry(:) |m/day       |pesticide burial velocity in river bed
 !!                               |sediment
 !!    sedpst_conc(:)|mg/(m**3)   |inital pesticide concentration in river bed
-!!                               |sediment
+!!                               |sediment - LEP EDF 2021 Active layer
+!!    sedpst_concb(:)|mg/(kg)    |inital pesticide concentration in river bed
+!!                               |sediment - LEP EDF 2021 Buried layer
 !!    sedpst_rea(:) |1/day       |pesticide reaction coefficient in river bed
 !!                               |sediment
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
@@ -147,6 +149,11 @@
       if (eof < 0) exit
       read (104,*,iostat=eof) sedpst_act(irch)
       if (eof < 0) exit
+!! LEP EDF 2021 read initial buried layer sediment conc
+!! If EDF custom chemical routing indicated in file.cio
+      if (rtpestcust == 2) then
+        read (104,*,iostat=eof) sedpst_concb(irch)
+      end if
 !      read (104,*,iostat=eof) biofilm_mumax(irch)
 !      if (eof < 0) exit
 !      read (104,*,iostat=eof) biofilm_kinv(irch)

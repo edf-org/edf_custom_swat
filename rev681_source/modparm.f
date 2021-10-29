@@ -103,6 +103,9 @@
       real*8 :: anion_excl_bsn
 !!    delcare mike van liew variables
 
+!     LEP EDF 2021 declare custom pesticide routing variables
+      integer :: rtpestcust
+      
 !    Drainmod tile equations  01/2006
       real*8, dimension (:), allocatable :: wat_tbl,sol_swpwt
       real*8, dimension (:,:), allocatable :: vwt
@@ -240,6 +243,7 @@
       real*8, dimension (:), allocatable :: drift,rch_dox,rch_bactp
       real*8, dimension (:), allocatable :: alpha_bnk,alpha_bnke
       real*8, dimension (:), allocatable :: disolvp,algae,sedst,rchstor
+      real*8 :: sedinorg !! LEP EDF 2021 sediment mass in reach after incoming sed, before dep/resus/outflow 
       real*8, dimension (:), allocatable :: organicn,organicp,chlora
       real*8, dimension (:), allocatable :: nitraten,nitriten,ch_li,ch_si
 
@@ -295,6 +299,7 @@
       real*8, dimension (:), allocatable :: rs6,rs7,rk1,rk2,rk3,rk4,rk5
       real*8, dimension (:), allocatable :: rk6,bc1,bc2,bc3,bc4,ammonian
       real*8, dimension (:), allocatable :: orig_sedpstconc
+      real*8, dimension (:), allocatable :: sedpst_concb !! LEP EDF 2021
       real*8, dimension (:,:), allocatable :: wurch
       integer, dimension (:), allocatable :: icanal
       integer, dimension (:), allocatable :: itb
