@@ -185,16 +185,17 @@
       if (bc2(irch) <= 0.) bc2(irch) = 1.1
       if (bc3(irch) <= 0.) bc3(irch) = 0.21
       if (bc4(irch) <= 0.) bc4(irch) = 0.35
-      if (chpst_rea(irch) <= 1.e-6) chpst_rea(irch) = 0.007
-      if (chpst_vol(irch) <= 1.e-6) chpst_vol(irch) = 0.01
-      if (chpst_koc(irch) <= 1.e-6) chpst_koc(irch) = 0.
+!! LEP EDF 2023 set smaller default values
+      if (chpst_rea(irch) <= 1.e-6) chpst_rea(irch) = 1.e-5
+      if (chpst_vol(irch) <= 1.e-6) chpst_vol(irch) = 1.e-5
+      if (chpst_koc(irch) <= 1.e-6) chpst_koc(irch) = 0.4
       if (chpst_stl(irch) <= 1.e-6) chpst_stl(irch) = 1.
-      if (chpst_rsp(irch) <= 1.e-6) chpst_rsp(irch) = 0.002
-      if (chpst_mix(irch) <= 1.e-6) chpst_mix(irch) = 0.001
+      if (chpst_rsp(irch) <= 1.e-6) chpst_rsp(irch) = 1.e-5
+      if (chpst_mix(irch) <= 1.e-6) chpst_mix(irch) = 0.00187
       if (sedpst_conc(irch) <= 1.e-6) sedpst_conc(irch) = 0.
-      if (sedpst_rea(irch) <= 1.e-6) sedpst_rea(irch) = 0.05
-      if (sedpst_bry(irch) <= 1.e-6) sedpst_bry(irch) = 0.002
-      if (sedpst_act(irch) <= 1.e-6) sedpst_act(irch) = 0.030
+      if (sedpst_rea(irch) <= 1.e-6) sedpst_rea(irch) = 1.e-5
+      if (sedpst_bry(irch) <= 1.e-6) sedpst_bry(irch) = 1.e-5
+      if (sedpst_act(irch) <= 1.e-6) sedpst_act(irch) = 0.050
 
 !!  set default values for mike van liew
       if (bc1(irch) <= 0.) bc1(irch) = bc1_bsn

@@ -76,7 +76,7 @@
 !!    jrch        |none          |reach number
 !!    pstin       |mg pst        |total chemical transported into reach
 !!                               |during time step
-!!    sedcon      |g/m^3         |sediment concentration
+!!    sedcon      |kg/m^3         |sediment concentration
 !!    sedpstmass  |mg pst        |mass of chemical in bed sediment
 !!    solpstin    |mg pst        |soluble chemical entering reach during 
 !!                               |time step
@@ -128,18 +128,27 @@
 !! LEP EDF 2021 prepare sediment fluxes needed for sorbed chemical processes      
       sedinflowst = sedinorg * 1000. !kg incoming (t) plus stored suspended sed from previous timestep (t-1)
       sedinflow = (varoute(3,inum2) * (1. - rnum1)) * 1000. !kg incoming routed sediment from upstream this timestep
-      sedstini = sedinflowst - sedinflow ! starting (t-1) suspended sediment before inflow, dep, resus
+      sedstini = 0.
+      if (sedinflowst - sedinflow > 0.) then
+        sedstini = sedinflowst - sedinflow ! starting (t-1) suspended sediment before inflow, dep, resus
+      endif
       seddep = rchdy(57,jrch) * 1000. ! sediment deposited this time step
       sedresus = rchdy(56,jrch) * 1000. ! sediment resuspended this time step
       sednet = seddep - sedresus ! net sediment transfer
-      bedcumul = depch(jrch) * 1000. !kg cumulative bed sediment after inflow, dep, resus        
-      bedcumulini = bedcumul - seddep + sedresus ! starting cumulative bed sediment
+      bedcumul = depch(jrch) * 1000. !kg cumulative bed sediment after inflow, dep, resus
+      bedcumulini = 0.
+      if (bedcumul - seddep + sedresus > 0.) then
+        bedcumulini = bedcumul - seddep + sedresus ! starting cumulative bed sediment
+      endif
       sedoutflow = sedrch * 1000. ! sediment outflow this time step
       !! Two layer benthic sediment model, Active and Buried
       porosity = 0.5 !! default VVWM porosity fraction
       density = 1350. !! default VVWM benthic sediment density kg/m3
       seda = bedvol* porosity * density !! active layer sediment mass kg
-      sedb = bedcumulini - seda !! buried layer sediment mass kg
+      sedb = 0.
+      if (bedcumulini - seda > 0.) then
+        sedb = bedcumulini - seda !! buried layer sediment mass kg
+      endif
       
 !! chemical transported into reach during day
       solpstin = 0.
@@ -181,8 +190,9 @@
         !! calculate fraction of soluble and sorbed chemical
         frsol = 0.
         frsrb = 0.
-!! LEP EDF 2021 use Kd = Koc * foc with default 0.04 foc in soil
-        kd = chpst_koc(jrch) * .04 * 1000. !! convert m3/g to m3/kg and use default 4% OC
+!! LEP EDF 2023 rtpest.f expects a chpst_koc to be a Kd(=Koc * foc) in units of m3/g
+!! so we'll use the same and assume the input has been pre-multiplied by default 0.04 foc in soil and in m3/g
+        kd = chpst_koc(jrch) * 1000. !! convert m3/g to m3/kg
         
 !! LEP EDF 2021 repartition even if there is no incoming chem load, water/sed ratio will change chem equilib
           if (chpst_koc(jrch) > 0.) then
