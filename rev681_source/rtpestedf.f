@@ -338,7 +338,7 @@
 !! calculate amount of chemical transported out of reach
 !! LEP EDF 2021 recalculate dissolved/sorbed partitioning after sediment processes
       sedcon = sedoutflow / rtwtr !! kg / m3
-      kd = chpst_koc(jrch) * .04 * 1000. !! convert m3/g to m3/kg and use default 4% OC
+      
       if (chpst_koc(jrch) > 0.) then
           frsol = 1. / (1. + kd * sedcon)
       else
