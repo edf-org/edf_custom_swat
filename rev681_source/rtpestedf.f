@@ -103,6 +103,9 @@
       real*8 :: seda, sedb, bursedpstmass, kd, chemssconc
       real*8 :: chemresus, chemdep, chembury, chemunbury, sedpst_conca
       real*8 :: bedarea
+      real :: apprxzero
+      
+      apprxzero = 1.e-16
 
       jrch = 0
       jrch = inum1
@@ -218,11 +221,17 @@
         !! reactw = chpst_rea(jrch) * chpstmass * tday
         reactw = chpstmass - (chpstmass * EXP(-1. * chpst_rea(jrch)     
      &           * tday))
+        if (reactw < apprxzero) then
+            reactw = 0.
+        end if
         
         !! calculate amount of chemical that volatilizes from reach
         volatpst = chpst_vol(jrch) * frsol * chpstmass * tday / depth
         if (volatpst > frsol * chpstmass) then
           volatpst = frsol * chpstmass    
+        end if
+        if (volatpst < apprxzero) then
+          volatpst = 0.
         end if
 
 ! LEP EDF 2021 dynamic sorbed chemical processes coupled to actual sediment flux
@@ -246,33 +255,47 @@
         else !! net resuspension
           sednet = -1. * sednet
           if (sednet > (seda + sedb)) then !! there was net erosion greater then cumulative benthic deposits thus far
-            chemdepa = 0.
+            chemdep = 0.
             chembury = 0.
             chemresus = sedpstmass + sedpst_concb(jrch)*sedb ! all chem goes back to channel
             chemunbury = sedpst_concb(jrch)*sedb ! all chem is unburied
           else if (sednet > seda) then !! there was net erosion that was greater than active layer but not all of buried
-            chemdepa = 0.
+            chemdep = 0.
             chembury = 0.
             chemunbury = sedpst_concb(jrch)*sednet !! an amount equal to net erosion is unburied, refills the active layer, and remainder added to resuspended
             chemresus = sedpstmass + sedpst_concb(jrch)*(sednet-seda) !!all active plus some buried chem reenters channel
           else if (sednet > 0 ) then !! there was net degradation that only partially resuspended active layer
-            chemdepa = 0.
+            chemdep = 0.
             chembury = 0.
             chemunbury = sedpst_concb(jrch)*(sednet) !! an amount equal to net erosion is unburied to fill up active lost to resuspension
             chemresus = sedpst_conca*sednet !! net resus chem at active layer concentration
           else !! no net sediment movement
             chemdep = 0.
-            chemresus = 0.
             chembury = 0.
+            chemunbury = 0.
             chemresus = 0.
           end if
         end if
 
+        !! don't let values have more than 3 digit exponent for fix format output
+        if (chemdep < apprxzero) then
+            chemdep = 0.
+        end if
+        if (chemresus < apprxzero) then
+            chemresus = 0.
+        end if
+        if (chembury < apprxzero) then
+            chembury = 0.
+        end if
+        
 ! LEP EDF 2021 fix this to occur between dissolved states in reach and active sed layer
         !! calculate diffusion of chemical between reach and sediment
         !! difus = D*(aqu. conc. reach - aqu. conc. sed)/dx*dt*bedarea
         difus = chpst_mix(jrch) * ((frsol * chpstmass / (rchwtr + wtrin)) - 
      &   (fsedsol * sedpst_conc(jrch))) * tday / depth * bedarea
+        if (abs(difus) < apprxzero) then
+            difus = 0.
+        end if
         
         
 ! LEP EDF 2021 Now update the mass balance of the channel chemical one time
@@ -282,10 +305,14 @@
         else
           chpstmass = chpstmass - loss
         end if
+        
         !!update variables for output.rch
         setlpst = chemdep
+        
         resuspst = chemresus
+        
         bury = chembury
+        
         
 ! LEP EDF 2021 allow the water concentration to exceed solubility 
         !! verify that water concentration is at or below solubility
@@ -308,6 +335,10 @@
       tday = 1.
       reactb = sedpstmass - (sedpstmass * EXP(-1. * sedpst_rea(jrch)     
      &           * tday))
+      if (reactb < apprxzero) then
+          reactb = 0.
+      end if
+      
       loss = reactb-chemdep+chemresus-chemunbury+chembury+difus
       if (loss > sedpstmass) then
         sedpstmass = 0.
@@ -353,6 +384,14 @@
         solpesto = 0.
         sorpesto = 0.
       end if
-
+      
+!! don't let the exponent exceed 2 digits for fixed format output
+      if (solpesto < apprxzero) then
+          solpesto = 0.
+      end if
+      if (sorpesto < apprxzero) then
+          sorpesto = 0.
+      end if
+      
       return
       end
